@@ -29,7 +29,7 @@ const NavBar = () => {
         {user && (
           <li>
             <NavLink href={`/dashboard/${user?.role}`}>
-              {user?.role === 'admin' ? 'Admin Dashboard' : 'My Orders'}
+              Dashboard
             </NavLink>
           </li>
         )}
