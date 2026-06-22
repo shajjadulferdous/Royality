@@ -81,21 +81,15 @@ const AddProductPage = () => {
             productDetails.price = Number(productDetails.price);
             productDetails.quantity = Number(productDetails.quantity);
             productDetails.service = Object.keys(services).filter(key => services[key] === true); // Convert to array of selected services
-            
+            productDetails.category = productDetails.category || 'other'; // Default to 'other' if not selected
             // Automatically attached readonly fields from current user session
             productDetails.addedBy = user.id;
             productDetails.addedByName = user.name || 'Anonymous';
             productDetails.addedByEmail = user.email || '';
             productDetails.status = 'pending'; // Default status for new products
-            // 3. Auth Token Retrieval
 
-            // const { data, error } = await authClient.token();
-            // if (error) {
-            //     toast.error('Token Invalid. Please Login Again');
-            //     return;
-            // }'Authorization': `Bearer ${token}`
-            // const { token } = data;
-             console.log(productDetails);
+            console.log(productDetails);
+            
             // 4. API Request
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/add-product`, {
                 method: 'POST',
@@ -114,6 +108,7 @@ const AddProductPage = () => {
             router.push('/dashboard/seller/my-added-product');
         });
     };
+
     if (isSessionPending) {
         return (
             <div className='w-full h-96 flex flex-col items-center justify-center gap-4'>
@@ -122,6 +117,7 @@ const AddProductPage = () => {
             </div>
         );
     }
+
     return (
         <div className='w-11/12 max-w-7xl mx-auto my-15'>
             <h1 className='font-bold text-4xl text-center'>Add New Product</h1>
@@ -167,10 +163,34 @@ const AddProductPage = () => {
                             <p className='text-slate-500 text-sm'>Enter consumer-facing catalog headings</p>
                         </div>
                     </div>
-                    <div className='flex flex-col gap-1'>
-                        <label className="font-semibold text-slate-700">Product Title</label>
-                        <input type="text" name='title' className="w-full input border border-slate-200 rounded-xl p-3 outline-none focus:border-[#35858E] transition-colors" placeholder="e.g. Ergonomic Wireless Mouse" required />
+                    
+                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                        <div className='flex flex-col gap-1'>
+                            <label className="font-semibold text-slate-700">Product Title</label>
+                            <input type="text" name='title' className="w-full input border border-slate-200 rounded-xl p-3 outline-none focus:border-[#35858E] transition-colors" placeholder="e.g. Ergonomic Wireless Mouse" required />
+                        </div>
+                        
+                        {/* New Category Field */}
+                        <div className='flex flex-col gap-1'>
+                            <label className="font-semibold text-slate-700">Category</label>
+                            <select 
+                                name='category' 
+                                className="w-full border border-slate-200 rounded-xl p-3 bg-white outline-none focus:border-[#35858E] transition-colors text-slate-700 cursor-pointer" 
+                                defaultValue=""
+                                required
+                            >
+                                <option value="" disabled>Select a category</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="vehicles">Vehicles & Transport</option>
+                                <option value="clothing">Clothing & Apparel</option>
+                                <option value="home-appliances">Home Appliances</option>
+                                <option value="sports-outdoors">Sports & Outdoors</option>
+                                <option value="machinery">Industrial Machinery</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
                     </div>
+
                     <div className='flex flex-col gap-1'>
                         <label className="font-semibold text-slate-700">Description</label>
                         <textarea name='description' className="w-full border border-slate-200 rounded-xl p-3 outline-none focus:border-[#35858E] transition-colors min-h-[100px]" placeholder="Provide a high-level breakdown of features..." required />

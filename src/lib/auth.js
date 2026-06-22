@@ -1,4 +1,5 @@
-import { betterAuth } from "better-auth";
+import { betterAuth} from "better-auth";
+import { jwt } from "better-auth/plugins"
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 
@@ -30,5 +31,8 @@ export const auth = betterAuth({
             maxAge: 5 * 60,
             strategy: "jwt"
         }
-    }
+    },
+    plugins: [
+        jwt(), 
+    ]
 });
