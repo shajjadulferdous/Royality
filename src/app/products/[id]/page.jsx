@@ -9,10 +9,10 @@ import {
     FiPackage, 
     FiMail
 } from 'react-icons/fi';
+import BuyCourse from '@/components/BuyCourse';
 
 const ProductDetailsPage = async ({ params }) => {
-    // Note: In Next.js 15+, params must be awaited. 
-    // If you are on Next.js 14, const { id } = params; is fine.
+   
     const { id } = await params;   
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
@@ -143,10 +143,9 @@ const ProductDetailsPage = async ({ params }) => {
                                     <FiShoppingCart />
                                     Add to Cart
                                 </Button>
-                                <Button variant="outline" className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-[#35858E] border-[#35858E] rounded-xl hover:bg-[#35858E]/10 transition-colors duration-200">
-                                    <FiShield />
-                                    Buy Now
-                                </Button>
+                                
+                                 <BuyCourse></BuyCourse>
+
                                 <Button variant="outline" className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-[#35858E] border-[#35858E] rounded-xl hover:bg-[#35858E]/10 transition-colors duration-200">
                                     See AR View
                                 </Button>
