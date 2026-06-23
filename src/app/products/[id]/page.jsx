@@ -144,7 +144,7 @@ const ProductDetailsPage = async ({ params }) => {
                                     Add to Cart
                                 </Button>
                                 
-                                 <BuyCourse></BuyCourse>
+                                 <BuyCourse price={product?.price} productId={product?._id} />
 
                                 <Button variant="outline" className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-[#35858E] border-[#35858E] rounded-xl hover:bg-[#35858E]/10 transition-colors duration-200">
                                     See AR View

@@ -3,15 +3,21 @@ import { Button } from '@heroui/react';
 import React from 'react';
 import { FiShield } from 'react-icons/fi';
 
-const BuyCourse= () => {
+const BuyCourse= ({price , productId}) => {
+
     const handlePayment = async()=>{
+
           const response = await fetch('/api/checkout_sessions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify({
+                price,
+                productId
+            })
         });
-         
+        
         if (!response.ok) {
              console.error('Failed to create checkout session. Please try again.');
              return;
