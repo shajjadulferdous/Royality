@@ -3,7 +3,7 @@ import { Button } from '@heroui/react';
 import React from 'react';
 import { FiShield } from 'react-icons/fi';
 
-const BuyCourse= ({price , productId}) => {
+const BuyCourse= ({price , productId, productTitle}) => {
 
     const handlePayment = async()=>{
 
@@ -14,7 +14,8 @@ const BuyCourse= ({price , productId}) => {
             },
             body: JSON.stringify({
                 price,
-                productId
+                productId,
+                productTitle
             })
         });
         

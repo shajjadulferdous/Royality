@@ -11,19 +11,40 @@ export default async function Success({ searchParams }) {
   if (!session_id) {
     throw new Error('Please provide a valid session_id (`cs_test_...`)');
   }
-
-  const {
-    status,
-    customer_details: { email: customerEmail }
-  } = await stripe.checkout.sessions.retrieve(session_id, {
+  
+  const session = await stripe.checkout.sessions.retrieve(session_id, {
     expand: ['line_items', 'payment_intent']
   });
-
+  const {status, customer_email: customerEmail} = session;
   if (status === 'open') {
     return redirect('/');
   }
-
+   
+  console.log('Checkout session details:', session);
   if (status === 'complete') {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+           transactionId: session.payment_intent?.id,
+           customerEmail,
+           productId: session.metadata.productId,
+           productTitle: session.metadata.productTitle,
+           amount: session.amount_total / 100, // Convert cents to dollars
+           currency: session.currency,
+           paymentStatus: session.payment_status  
+      })
+    }).catch((error) => {
+      console.error('Error recording order in the database:', error);
+      throw new Error('Failed to record order in the database');    
+      });
+
+    if (!response.ok) {
+      throw new Error('Failed to record order in the database');
+    }
+
     return (
       <section id="success" className="min-h-screen flex items-center justify-center bg-slate-50/50 p-4 sm:p-6">
         <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative">
@@ -75,7 +96,7 @@ export default async function Success({ searchParams }) {
                   View Orders
                 </Button>
               </Link>
-              <Link href="/" className="flex-1">
+              <Link href="/products" className="flex-1">
                 <Button 
                   className="w-full h-12 bg-[#35858E] text-white font-bold rounded-xl hover:bg-[#2b6d75] transition-all shadow-lg shadow-[#35858E]/20"
                 >
