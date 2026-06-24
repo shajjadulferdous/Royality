@@ -34,7 +34,8 @@ export default async function Success({ searchParams }) {
            productTitle: session.metadata.productTitle,
            amount: session.amount_total / 100, // Convert cents to dollars
            currency: session.currency,
-           paymentStatus: session.payment_status  
+           paymentStatus: session.payment_status,
+           sellerStatus:"pending" 
       })
     }).catch((error) => {
       console.error('Error recording order in the database:', error);
