@@ -69,7 +69,8 @@ const MyWishListPage = async () => {
     // Filter out any products that failed to fetch (null values)
     const validProducts = productsRaw.filter(Boolean);
 
-    const nextPath = ()=>{
+    const nextPath = async()=>{
+        'use server';
         revalidatePath('/dashboard/user/my-wishlist');
     }
 
