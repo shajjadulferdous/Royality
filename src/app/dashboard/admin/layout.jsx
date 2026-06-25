@@ -17,14 +17,18 @@ const NAV_CONFIG = {
     { href: "/dashboard/user/my-wishlist", label: "My Wishlist", icon: LuHeart },
     { href: "/dashboard/user/transactions", label: "Transactions", icon: LuCreditCard },
   ],
-  
+  deliveryman: [
+    { href: "/dashboard/deliveryman", label: "Dashboard", icon: LuLayoutDashboard },
+    { href: "/dashboard/deliveryman/deliveries", label: "Deliveries", icon: LuTruck },
+  ],
+
 };
 
 import NavLink from '@/components/NavLink';
 import { SideBar } from '@/components/SideBar';
 import React from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
-import { LuCalendarClock, LuCreditCard, LuHeart, LuLayoutDashboard, LuPackage, LuShieldAlert, LuShoppingBag, LuUsers } from 'react-icons/lu';
+import { LuCalendarClock, LuCreditCard, LuHeart, LuLayoutDashboard, LuPackage, LuShieldAlert, LuShoppingBag, LuTruck, LuUsers } from 'react-icons/lu';
 
 const AdminDashboardLayout = ({ children }) => {
     const navItems = NAV_CONFIG['admin'] || [];

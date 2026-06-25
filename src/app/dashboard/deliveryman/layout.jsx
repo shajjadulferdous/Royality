@@ -1,4 +1,5 @@
 'use client';
+
 const NAV_CONFIG = {
   seller: [
     { href: "/dashboard/seller", label: "Dashboard", icon: LuLayoutDashboard },
@@ -8,7 +9,7 @@ const NAV_CONFIG = {
   ],
   admin: [
     { href: "/dashboard/admin", label: "Admin Dashboard", icon: LuShieldAlert },
-    { href: "/dashboard/admin/manage-orders", label: "Manage Orders", icon: LuShoppingBag },
+    { href: "/dashboard/admin/manage-orders", label: "Manage Product", icon: LuShoppingBag },
     { href: "/dashboard/admin/manage-users", label: "Manage Users", icon: LuUsers },
   ],
   user: [
@@ -27,14 +28,24 @@ import NavLink from '@/components/NavLink';
 import { SideBar } from '@/components/SideBar';
 import React from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
-import { LuCalendarClock, LuCreditCard, LuHeart, LuLayoutDashboard, LuPackage, LuShieldAlert, LuShoppingBag, LuTruck, LuUsers } from 'react-icons/lu';
+import {
+  LuCalendarClock,
+  LuCreditCard,
+  LuHeart,
+  LuLayoutDashboard,
+  LuPackage,
+  LuShieldAlert,
+  LuShoppingBag,
+  LuTruck,
+  LuUsers,
+} from 'react-icons/lu';
 
-const SellerDashboardLayout = ({ children }) => {
-    const navItems = NAV_CONFIG['seller'] || [];
+const DeliverymanDashboardLayout = ({ children }) => {
+    const navItems = NAV_CONFIG['deliveryman'] || [];
 
     return (
-        <div className="flex h-screen overflow-hidden"> {/* overflow-hidden পুরো পেজের মেইন স্ক্রোল বন্ধ রাখবে */}
-            <aside className="w-64 p-4 border-r border-gray-200"> {/* সাইডবার ফিক্সড থাকবে */}
+        <div className="flex h-screen overflow-hidden">
+            <aside className="w-64 p-4 border-r border-gray-200">
                 <nav className="space-y-2">
                     {navItems.map((item) => (
                         <NavLink key={item.href} href={item.href} className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-700">
@@ -47,13 +58,12 @@ const SellerDashboardLayout = ({ children }) => {
             <div className='hidden'>
               <SideBar/>
             </div>
-            
-            {/* এখানে h-full এবং overflow-y-auto যোগ করা হয়েছে */}
+
             <main className="flex-1 h-full overflow-y-auto p-6 bg-gray-100">
                 {children}
             </main>
-        </div>  
+        </div>
     );
 };
 
-export default SellerDashboardLayout;
+export default DeliverymanDashboardLayout;
