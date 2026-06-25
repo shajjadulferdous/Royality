@@ -5,7 +5,7 @@ import { FiCheckCircle, FiMail, FiArrowRight, FiShoppingBag } from 'react-icons/
 import { Button } from '@heroui/react';
 
 export default async function Success({ searchParams }) {
-  // In Next.js 15+, searchParams is a promise
+
   const { session_id } = await searchParams;
 
   if (!session_id) {
@@ -35,6 +35,8 @@ export default async function Success({ searchParams }) {
            amount: session.amount_total / 100, // Convert cents to dollars
            currency: session.currency,
            paymentStatus: session.payment_status,
+           phone:session.metadata.phone,
+           address:session.metadata.address,
            sellerStatus:"pending" 
       })
     }).catch((error) => {

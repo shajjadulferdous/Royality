@@ -10,6 +10,7 @@ import {
     FiMail
 } from 'react-icons/fi';
 import BuyCourse from '@/components/BuyCourse';
+import { TakeAdreessForm } from '@/components/TakeAddress';
 
 const ProductDetailsPage = async ({ params }) => {
    
@@ -144,7 +145,9 @@ const ProductDetailsPage = async ({ params }) => {
                                     Add to Cart
                                 </Button>
                                 
-                                 <BuyCourse price={product?.price} productId={product?._id} productTitle={product?.title} />
+                                 {/* <BuyCourse price={product?.price} productId={product?._id} productTitle={product?.title} /> */}
+
+                                 <TakeAdreessForm price={product?.price} productId={product?._id} productTitle={product?.title}/>
 
                                 <Button variant="outline" className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-[#35858E] border-[#35858E] rounded-xl hover:bg-[#35858E]/10 transition-colors duration-200">
                                     See AR View

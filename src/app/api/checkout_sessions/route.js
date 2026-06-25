@@ -12,7 +12,7 @@ export async function POST(req) {
     console.log('Received request to create checkout session with body:', body)
 
     const data = await auth.api.getSession({
-        headers: await headers() // you need to pass the headers object.
+        headers: await headers()
     });
     const user = data?.user;
     if (!user) {
@@ -29,17 +29,16 @@ export async function POST(req) {
     const price_data = {
       currency: 'usd',
       product_data: {
-        name : body?.productTitle, // You can replace this with the actual product name or ID
+        name : body?.productTitle,
       },
-      unit_amount: body.price * 100, // Convert dollars to cents
+      unit_amount: body.price * 100, 
     }
     const metadata = {
         productId :body?.productId,
-        productTitle:body?.productTitle
+        productTitle:body?.productTitle,
+        phone:body?.phone,
+        address:body?.address
     }
-
-    console.log("metadata shajjadulf",  metadata);
-    // Create Checkout Sessions from body params.
      const session = await stripe.checkout.sessions.create({
       metadata:metadata,
       customer_email: user.email,
