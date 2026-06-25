@@ -5,6 +5,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { FiAlertCircle, FiUsers } from 'react-icons/fi';
 import RoleSelect from '@/components/RoleSelect';
+import BlockToggle from '@/components/BlockToggle';
 
 const ManageUserPage = async () => {
     const session = await auth.api.getSession({
@@ -91,8 +92,16 @@ const ManageUserPage = async () => {
                                     </p>
                                 </div>
                             </div>
-                            <div className="pt-3 border-t border-gray-100">
+                            <div className="pt-3 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3">
                                 <RoleSelect userId={u._id} currentRole={u.role || 'user'} />
+                                <div className="flex items-center gap-2">
+                                    {u.block && (
+                                        <span className="text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-2 py-1 rounded">
+                                            Blocked
+                                        </span>
+                                    )}
+                                    <BlockToggle userId={u._id} initialBlock={u.block} />
+                                </div>
                             </div>
                         </div>
                     ))}
