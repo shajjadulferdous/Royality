@@ -1,24 +1,17 @@
 import React from 'react';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import { Chip, Table } from "@heroui/react";
 import {
     FiAlertCircle,
-    FiDollarSign,
     FiPieChart,
-    FiClock,
-    FiCheckCircle,
-    FiPackage,
-    FiCreditCard,
 } from 'react-icons/fi';
-import TransactionsTable from './TransactionsTable';
 
 export default async function TransactionPage({ searchParams }) {
-    // Next.js 15+ এর জন্য searchParams প্রোমিজ আকারে আসে, তাই await করে নেওয়া নিরাপদ
     const resolvedSearchParams = await searchParams;
     const currentPage = Number(resolvedSearchParams?.page) || 1;
     const rowsPerPage = 8;
 
-    // ১. ইউজার সেশন চেক
     const session = await auth.api.getSession({
         headers: await headers()
     });
@@ -38,11 +31,10 @@ export default async function TransactionPage({ searchParams }) {
         );
     }
 
-    // ২. সার্ভার সাইড ডাটা ফেচিং
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tranctions/${user?.email}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         },
         cache: 'no-store'
     });
@@ -54,7 +46,9 @@ export default async function TransactionPage({ searchParams }) {
                     <FiAlertCircle className="w-6 h-6 flex-shrink-0 text-red-500" />
                     <div>
                         <h3 className="font-bold text-lg">Sync Interface Interrupted</h3>
-                        <p className="text-sm text-red-600/90 mt-0.5">Failed to fetch transactions dataset. Please verify system endpoints.</p>
+                        <p className="text-sm text-red-600/90 mt-0.5">
+                            Failed to fetch transactions dataset. Please verify system endpoints.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -64,22 +58,13 @@ export default async function TransactionPage({ searchParams }) {
     const rawTransactions = await response.json();
     const transactions = Array.isArray(rawTransactions) ? rawTransactions : [];
 
-    // ৩. ড্যাশবোর্ড অ্যানালিটিক্স হিসাব (Server-side reduction)
     const totalTransactions = transactions.length;
-    const totalVolume = transactions.reduce((sum, tx) => tx.paymentStatus === 'paid' ? sum + Number(tx.amount || 0) : sum, 0);
-    const pendingRequests = transactions.filter(tx => tx.sellerStatus === 'pending').length;
-    const completedOrders = transactions.filter(tx => tx.sellerStatus === 'approved' || tx.sellerStatus === 'delivered').length;
-
-    // ৪. সার্ভার সাইড পেজিনেশন স্লাইস
-    const totalPages = Math.ceil(totalTransactions / rowsPerPage) || 1;
     const startIndex = (currentPage - 1) * rowsPerPage;
     const paginatedTransactions = transactions.slice(startIndex, startIndex + rowsPerPage);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 py-10 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
-
-                {/* Header Title */}
                 <div className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200/60 pb-6">
                     <div>
                         <div className="flex items-center gap-2 text-xs font-bold text-[#35858E] tracking-wider uppercase mb-1.5">
@@ -106,84 +91,114 @@ export default async function TransactionPage({ searchParams }) {
                         </p>
                     </div>
                 ) : (
-                    <>
-                        {/* Premium Dashboard Metrics Panel */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                            <div className="group bg-white p-5 rounded-2xl border border-slate-200/70 shadow-sm flex items-center justify-between transition-all hover:shadow-md hover:border-slate-300">
-                                <div className="space-y-1">
-                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Total Volume</span>
-                                    <span className="text-2xl font-black text-slate-900 tracking-tight block">
-                                        ${totalVolume.toLocaleString()}
-                                    </span>
-                                </div>
-                                <div className="w-11 h-11 bg-[#35858E]/10 rounded-xl flex items-center justify-center text-[#35858E] group-hover:scale-105 transition-transform">
-                                    <FiDollarSign className="w-5 h-5" />
-                                </div>
-                            </div>
+                    <Table>
+                        <Table.ResizableContainer>
+                            <Table.Content aria-label="Transactions table" className="min-w-[1200px]">
+                                <Table.Header>
+                                    <Table.Column isRowHeader defaultWidth="3fr" id="txId" minWidth={180}>
+                                        Transaction ID
+                                        <Table.ColumnResizer />
+                                    </Table.Column>
+                                    <Table.Column defaultWidth="1.5fr" id="productTitle" minWidth={160}>
+                                        Product Title
+                                        <Table.ColumnResizer />
+                                    </Table.Column>
+                                    <Table.Column defaultWidth="1fr" id="amount" minWidth={100}>
+                                        Amount
+                                        <Table.ColumnResizer />
+                                    </Table.Column>
+                                    <Table.Column defaultWidth="0.8fr" id="currency" minWidth={80}>
+                                        Currency
+                                        <Table.ColumnResizer />
+                                    </Table.Column>
+                                    <Table.Column defaultWidth="1fr" id="status" minWidth={120}>
+                                        Payment Status
+                                        <Table.ColumnResizer />
+                                    </Table.Column>
+                                    <Table.Column defaultWidth="1fr" id="sellerStatus" minWidth={120}>
+                                        Seller Status
+                                        <Table.ColumnResizer />
+                                    </Table.Column>
+                                    <Table.Column defaultWidth="1.5fr" id="email" minWidth={180}>
+                                        Customer Email
+                                        <Table.ColumnResizer />
+                                    </Table.Column>
+                                    <Table.Column defaultWidth="1.5fr" id="phone" minWidth={140}>
+                                        Phone
+                                        <Table.ColumnResizer />
+                                    </Table.Column>
+                                    <Table.Column defaultWidth="2fr" id="address" minWidth={220}>
+                                        Address
+                                    </Table.Column>
+                                </Table.Header>
+                                
+                                <Table.Body>
+                                    {paginatedTransactions.map((tx) => (
+                                        <Table.Row key={tx._id?.$oid || tx.transactionId}>
+                                            {/* 1. Transaction ID */}
+                                            <Table.Cell className="font-mono text-xs text-[#35858E] font-semibold">
+                                                {tx.transactionId}
+                                            </Table.Cell>
+                                            
+                                            {/* 2. Product Title */}
+                                            <Table.Cell className="font-medium text-slate-900">
+                                                {tx.productTitle || "N/A"}
+                                            </Table.Cell>
+                                            
+                                            {/* 3. Amount */}
+                                            <Table.Cell className="font-semibold text-slate-800">
+                                                {tx.amount}
+                                            </Table.Cell>
 
-                            <div className="group bg-white p-5 rounded-2xl border border-slate-200/70 shadow-sm flex items-center justify-between transition-all hover:shadow-md hover:border-slate-300">
-                                <div className="space-y-1">
-                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Total Records</span>
-                                    <span className="text-2xl font-black text-slate-900 tracking-tight block">
-                                        {totalTransactions}
-                                    </span>
-                                </div>
-                                <div className="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 group-hover:scale-105 transition-transform">
-                                    <FiPackage className="w-5 h-5" />
-                                </div>
-                            </div>
+                                            {/* 4. Currency */}
+                                            <Table.Cell className="font-bold text-slate-600 uppercase text-xs">
+                                                {tx.currency}
+                                            </Table.Cell>
+                                            
+                                            {/* 5. Payment Status */}
+                                            <Table.Cell>
+                                                <Chip 
+                                                    color={tx.paymentStatus === 'paid' ? 'success' : 'warning'} 
+                                                    size="sm" 
+                                                    variant="soft"
+                                                    className="capitalize font-medium"
+                                                >
+                                                    {tx.paymentStatus}
+                                                </Chip>
+                                            </Table.Cell>
 
-                            <div className="group bg-white p-5 rounded-2xl border border-slate-200/70 shadow-sm flex items-center justify-between transition-all hover:shadow-md hover:border-slate-300">
-                                <div className="space-y-1">
-                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Pending</span>
-                                    <span className="text-2xl font-black text-slate-900 tracking-tight block">
-                                        {pendingRequests}
-                                    </span>
-                                </div>
-                                <div className="w-11 h-11 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 group-hover:scale-105 transition-transform">
-                                    <FiClock className="w-5 h-5" />
-                                </div>
-                            </div>
+                                            {/* 6. Seller Status */}
+                                            <Table.Cell>
+                                                <Chip 
+                                                    color={tx.sellerStatus === 'completed' ? 'success' : tx.sellerStatus === 'pending' ? 'warning' : 'danger'} 
+                                                    size="sm" 
+                                                    variant="flat"
+                                                    className="capitalize font-medium"
+                                                >
+                                                    {tx.sellerStatus || "N/A"}
+                                                </Chip>
+                                            </Table.Cell>
+                                            
+                                            {/* 7. Customer Email */}
+                                            <Table.Cell className="text-slate-600 text-sm">
+                                                {tx.customerEmail}
+                                            </Table.Cell>
 
-                            <div className="group bg-white p-5 rounded-2xl border border-slate-200/70 shadow-sm flex items-center justify-between transition-all hover:shadow-md hover:border-slate-300">
-                                <div className="space-y-1">
-                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Completed</span>
-                                    <span className="text-2xl font-black text-slate-900 tracking-tight block">
-                                        {completedOrders}
-                                    </span>
-                                </div>
-                                <div className="w-11 h-11 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 group-hover:scale-105 transition-transform">
-                                    <FiCheckCircle className="w-5 h-5" />
-                                </div>
-                            </div>
-                        </div>
+                                            {/* 8. Phone */}
+                                            <Table.Cell className="text-slate-600 text-sm font-mono">
+                                                {tx.phone || "N/A"}
+                                            </Table.Cell>
 
-                        {/* Toolbar */}
-                        <div className="flex items-center justify-between mb-4 px-1">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-lg bg-[#35858E]/10 flex items-center justify-center text-[#35858E]">
-                                    <FiCreditCard className="w-4 h-4" />
-                                </div>
-                                <div>
-                                    <h2 className="text-sm font-bold text-slate-900">All Transactions</h2>
-                                    <p className="text-xs text-slate-500">Sorted by most recent</p>
-                                </div>
-                            </div>
-                            <span className="hidden sm:inline-block px-2 py-1 bg-white border border-slate-200 rounded-md text-xs font-medium text-slate-600">
-                                {totalTransactions} entries
-                            </span>
-                        </div>
-
-                        {/* HeroUI Table */}
-                        <TransactionsTable
-                            rows={paginatedTransactions}
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            startIndex={startIndex}
-                            rowsPerPage={rowsPerPage}
-                            totalTransactions={totalTransactions}
-                        />
-                    </>
+                                            {/* 9. Address */}
+                                            <Table.Cell className="text-slate-500 text-xs max-w-[200px] truncate" title={tx.address}>
+                                                {tx.address || "N/A"}
+                                            </Table.Cell>
+                                        </Table.Row>
+                                    ))}
+                                </Table.Body>
+                            </Table.Content>
+                        </Table.ResizableContainer> {/* Fix for Table.ResizableContainer structure matching standard HeroUI */}
+                    </Table>
                 )}
             </div>
         </div>

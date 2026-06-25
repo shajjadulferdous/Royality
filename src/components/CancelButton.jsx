@@ -1,23 +1,35 @@
-import { Button } from '@heroui/react';
-import React from 'react';
+'use client';
 
-const CancelButton = ({transactionId}) => {
-    const handleCancelAction = async () => {
-        'use server';
-        try {
-            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions/cancel/${transactionId}`, { 
-                method: 'PATCH', 
-                headers:{
-                    'Content-Type': 'application/json'
-                }
-            });
-            revalidatePath('/user/transaction'); 
-        } catch (error) {
-            console.error("Failed to cancel transaction:", error);
-        }
+import { Button } from '@heroui/react';
+import React, { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { cancelTransactionAction } from '@/app/actions/cancelTransaction';
+
+const CancelButton = ({ transactionId }) => {
+    const router = useRouter();
+    const [isPending, startTransition] = useTransition();
+
+    const handleCancel = () => {
+        if (!transactionId) return;
+        startTransition(async () => {
+            const result = await cancelTransactionAction(transactionId);
+            if (result?.ok) {
+                router.refresh();
+            }
+        });
     };
+
     return (
-        <Button onClick={handleCancelAction} variant='danger'>Cancel</Button>
+        <Button
+            color="danger"
+            variant="solid"
+            size="sm"
+            onPress={handleCancel}
+            isDisabled={isPending}
+            isLoading={isPending}
+        >
+            {isPending ? 'Cancelling…' : 'Cancel'}
+        </Button>
     );
 };
 
