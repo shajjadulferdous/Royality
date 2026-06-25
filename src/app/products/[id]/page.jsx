@@ -141,7 +141,6 @@ const ProductDetailsPage = async ({ params }) => {
                                <div className="flex items-center gap-4 px-6 py-3">
                                 
                                  <AddCardList productId={product?._id}/>
-                                 {/* <BuyCourse price={product?.price} productId={product?._id} productTitle={product?.title} /> */}
 
                                  <TakeAdreessForm price={product?.price} productId={product?._id} productTitle={product?.title} sellerEmail={product?.addedByEmail}/>
 

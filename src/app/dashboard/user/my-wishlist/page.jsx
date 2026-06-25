@@ -3,6 +3,9 @@ import React from 'react';
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import { TakeAdreessForm } from '@/components/TakeAddress';
+import DeleteFromWishlist from '@/components/DeleteFromWishlist';
+import { revalidatePath } from 'next/cache';
 
 const MyWishListPage = async () => {
     const session = await auth.api.getSession(
@@ -10,21 +13,20 @@ const MyWishListPage = async () => {
     );
     const user = session?.user;
 
-    // Jodio user login kora na thake, login page-e pathiye dibo
+
     if (!user) {
         redirect('/login');
     }
 
     let wishlist = [];
 
-    // 1. Fetching the Wishlist
   
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wishlist/${user?.email}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
             },
-            cache: 'no-store' // Ensure fresh data on reload
+            cache: 'no-store' 
         });
 
         if (!response.ok) {
@@ -67,10 +69,14 @@ const MyWishListPage = async () => {
     // Filter out any products that failed to fetch (null values)
     const validProducts = productsRaw.filter(Boolean);
 
+    const nextPath = ()=>{
+        revalidatePath('/dashboard/user/my-wishlist');
+    }
+
     return (
         <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
             <div className="mb-8 border-b border-gray-200 pb-6">
-                <h1 className="text-3xl font-bold text-gray-900">My Wishlist</h1>
+                <h1 className="text-3xl font-bold text-gray-900">My CardList</h1>
                 <p className="text-gray-600 mt-2">
                     Products you have saved for later.
                 </p>
@@ -105,12 +111,9 @@ const MyWishListPage = async () => {
 
                             {/* Buttons Container */}
                             <div className="mt-auto flex gap-2 pt-4 border-t border-gray-100">
-                                <button className="flex-1 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 py-2 rounded-lg font-medium transition-colors text-sm">
-                                    Delete
-                                </button>
-                                <button className="flex-1 bg-[#35858E] text-white hover:bg-[#2a6a71] py-2 rounded-lg font-medium transition-colors text-sm shadow-sm">
-                                    Buy Now
-                                </button>
+                                 <DeleteFromWishlist nextPath={nextPath} title={product?.title} productId={product?._id} userEmail={user?.email}></DeleteFromWishlist>
+                                 <TakeAdreessForm price={product?.price} productId={product?._id} productTitle={product?.title} sellerEmail={product?.addedByEmail}/>
+                                
                             </div>
                         </div>
                     ))}

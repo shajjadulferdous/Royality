@@ -43,7 +43,7 @@ const AddCardList = ({ productId }) => {
 
             if (data.message === "Already in wishlist") {
                 toast.error("Already added to wishlist");
-                setAdded(true);
+                // setAdded(true);
                 return;
             }
 
