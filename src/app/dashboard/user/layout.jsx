@@ -14,7 +14,7 @@ const NAV_CONFIG = {
   user: [
     { href: "/dashboard/user", label: "User Dashboard", icon: LuLayoutDashboard },
     { href: "/dashboard/user/my-orders", label: "My Orders", icon: LuShoppingBag },
-    { href: "/dashboard/user/my-wishlist", label: "My Wishlist", icon: LuHeart },
+    { href: "/dashboard/user/my-wishlist", label: "My CardList", icon: LuHeart },
     { href: "/dashboard/user/transactions", label: "Transactions", icon: LuCreditCard },
   ],
   deliveryman: [

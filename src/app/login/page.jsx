@@ -1,13 +1,12 @@
 'use client'
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
 import { Button } from '@heroui/react';
 import { Icon } from '@iconify-icon/react';
+import toast from 'react-hot-toast';
 
 const LoginPage = () => {
     const router = useRouter();

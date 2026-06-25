@@ -9,8 +9,8 @@ import {
     FiPackage, 
     FiMail
 } from 'react-icons/fi';
-import BuyCourse from '@/components/BuyCourse';
 import { TakeAdreessForm } from '@/components/TakeAddress';
+import AddCardList from '@/components/AddCardList';
 
 const ProductDetailsPage = async ({ params }) => {
    
@@ -21,7 +21,6 @@ const ProductDetailsPage = async ({ params }) => {
          headers: {
              'Content-Type': 'application/json'
          },
-         // cache: 'no-store' // Uncomment if you want fresh data on every load
     });
 
     if (!response.ok) {
@@ -140,11 +139,8 @@ const ProductDetailsPage = async ({ params }) => {
                                 </Button>
                             ) : (
                                <div className="flex items-center gap-4 px-6 py-3">
-                                 <Button variant="solid" className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-[#35858E] rounded-xl hover:bg-[#35858E]/90 transition-colors duration-200">
-                                    <FiShoppingCart />
-                                    Add to Cart
-                                </Button>
                                 
+                                 <AddCardList productId={product?._id}/>
                                  {/* <BuyCourse price={product?.price} productId={product?._id} productTitle={product?.title} /> */}
 
                                  <TakeAdreessForm price={product?.price} productId={product?._id} productTitle={product?.title} sellerEmail={product?.addedByEmail}/>
