@@ -25,12 +25,12 @@ export function TakeAdreessForm({price  , productId, productTitle}) {
             })
         });
         
-        // if (!response.ok) {
-        //      console.error('Failed to create checkout session. Please try again.');
-        //      return;
-        // }
-        // const data = await response.json();
-        // window.location.href = data.url;
+        if (!response.ok) {
+             console.error('Failed to create checkout session. Please try again.');
+             return;
+        }
+        const data = await response.json();
+        window.location.href = data.url;
     }
   return (
     <Modal>
