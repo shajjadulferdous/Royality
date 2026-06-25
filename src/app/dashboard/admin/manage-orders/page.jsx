@@ -2,11 +2,9 @@ import React from 'react';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import Image from 'next/image';
-import { Button } from '@heroui/react';
-import { changeUser } from '@/lib/PostPatch';
 import ApproveButton from '@/components/ApproveButton';
-import toast from 'react-hot-toast';
 import DeleteDialog from '@/components/DeleteDialog';
+import { revalidatePath } from 'next/cache';
 
 const AdminProductApprovalPage = async () => {
     const session = await auth.api.getSession({
@@ -31,7 +29,7 @@ const AdminProductApprovalPage = async () => {
             'Content-Type': 'application/json',
         }
     });
-
+       
     if (!response.ok) {
         return ( 
             <div className="max-w-5xl mx-auto p-6">
@@ -42,7 +40,10 @@ const AdminProductApprovalPage = async () => {
             </div>  
         );    
     }
-   
+    const nextPath = ()=>{
+        revalidatePath('/dashboard/admin/manage-orders');
+
+    }
     const productsData = await response.json();
     const productList = productsData.products || [];
 
@@ -140,7 +141,7 @@ const AdminProductApprovalPage = async () => {
 
                                         {/* Approve Form */}
                                         
-                                            <ApproveButton productId={productId} />
+                                            <ApproveButton productId={productId} nextPath={nextPath} />
                                       
                                     </div>
 

@@ -3,7 +3,7 @@ import { Button } from '@heroui/react';
 import React from 'react';
 import toast from 'react-hot-toast';
 
-const ApproveButton = ({ productId }) => {
+const ApproveButton = ({ productId , nextPath }) => {
      const handleApprove = async()=>{
           const data = { status: 'approved' };
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${productId}/status`, {
@@ -18,7 +18,7 @@ const ApproveButton = ({ productId }) => {
              toast.error('Failed to approve product. Please try again.');
              return;
         }
-        return await response.json();
+        nextPath();
     }
     return (
        <Button
