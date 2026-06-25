@@ -9,7 +9,6 @@ import { LuPackageSearch } from 'react-icons/lu';
 import WishlistButton from '@/components/WishlistButton';
 
 const SORT_OPTIONS = [
-  
     { value: 'price-asc', label: 'Price: low to high' },
     { value: 'price-desc', label: 'Price: high to low' },
     { value: 'title-asc', label: 'Name: A → Z' },
