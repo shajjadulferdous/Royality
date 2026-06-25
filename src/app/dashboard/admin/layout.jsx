@@ -8,7 +8,7 @@ const NAV_CONFIG = {
   ],
   admin: [
     { href: "/dashboard/admin", label: "Admin Dashboard", icon: LuShieldAlert },
-    { href: "/dashboard/admin/manage-orders", label: "Manage Orders", icon: LuShoppingBag },
+    { href: "/dashboard/admin/manage-orders", label: "Manage Product", icon: LuShoppingBag },
     { href: "/dashboard/admin/manage-users", label: "Manage Users", icon: LuUsers },
   ],
   user: [
@@ -17,6 +17,7 @@ const NAV_CONFIG = {
     { href: "/dashboard/user/my-wishlist", label: "My Wishlist", icon: LuHeart },
     { href: "/dashboard/user/transactions", label: "Transactions", icon: LuCreditCard },
   ],
+  
 };
 
 import NavLink from '@/components/NavLink';
