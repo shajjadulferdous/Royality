@@ -37,7 +37,8 @@ export default async function Success({ searchParams }) {
            paymentStatus: session.payment_status,
            phone:session.metadata.phone,
            address:session.metadata.address,
-           sellerStatus:"pending" 
+           sellerStatus:"pending",
+           sellerEmail:session.metadata.sellerEmail
       })
     }).catch((error) => {
       console.error('Error recording order in the database:', error);

@@ -37,7 +37,8 @@ export async function POST(req) {
         productId :body?.productId,
         productTitle:body?.productTitle,
         phone:body?.phone,
-        address:body?.address
+        address:body?.address,
+        sellerEmail:body?.sellerEmail
     }
      const session = await stripe.checkout.sessions.create({
       metadata:metadata,

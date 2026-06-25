@@ -4,7 +4,7 @@ import {Envelope} from "@gravity-ui/icons";
 import {Button, Input, Label, Modal, Surface, TextField} from "@heroui/react";
 
 
-export function TakeAdreessForm({price  , productId, productTitle}) {
+export function TakeAdreessForm({price  , productId, productTitle , sellerEmail}) {
  
    const handlePayment = async(e)=>{
            e.preventDefault();
@@ -21,7 +21,8 @@ export function TakeAdreessForm({price  , productId, productTitle}) {
                 productId,
                 productTitle,
                 phone:dat?.phone,
-                address:dat?.address
+                address:dat?.address,
+                sellerEmail
             })
         });
         

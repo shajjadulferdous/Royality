@@ -18,46 +18,40 @@ export default async function RequestedBookingsPage() {
 
     let orders = [];
     let fetchError = null;
+    
     try {
-        // Pull this seller's products first, then collect orders for those products.
-        const productsRes = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/my-products?email=${user.email}`,
-            { method: 'GET', headers: { 'Content-Type': 'application/json' }, cache: 'no-store' }
-        );
-        const productsData = productsRes.ok ? await productsRes.json() : { products: [] };
-        const myProducts = productsData.products || [];
-        const myProductIds = new Set(myProducts.map((p) => String(p._id)));
+        // Double check if NEXT_PUBLIC_AUTH_URL is your actual backend API URL wrapper
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/requested-booking/${user?.email}`, {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json"
+            },
+            cache: 'no-store' // Keeps data fresh on every server request
+        });
 
-        const txRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tranctions/${user.email}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            cache: 'no-store',
-        }).catch(() => null);
-
-        // Note: /tranctions/:email is the customer's view; sellers need their own feed.
-        // We fall back to fetching all transactions and filtering on the seller match.
-        const allTxRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/seller/orders/${user.email}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            cache: 'no-store',
-        }).catch(() => null);
-
-        let allTx = [];
-        if (allTxRes && allTxRes.ok) {
-            const data = await allTxRes.json();
-            allTx = Array.isArray(data) ? data : data.orders || [];
+        if (!response.ok) {
+            fetchError = "Failed to fetch requested product details. Please try again later or check the URL.";
         } else {
-            // If the dedicated seller endpoint is missing, use what we have without crashing.
-            fetchError = null;
-            allTx = [];
+            orders = await response.json();
         }
-
-        orders = allTx.filter((tx) => myProductIds.has(String(tx.productId)));
     } catch (error) {
-        console.error('Failed to load seller orders:', error);
-        fetchError = 'Failed to fetch orders. Please try again later.';
+        console.error("Failed fetching bookings:", error);
+        fetchError = "A server connection error occurred. Please verify your internet or backend status.";
     }
 
+    // If an error occurs during fetch, return a graceful error view
+    if (fetchError) {
+        return (
+            <div className="max-w-5xl mx-auto p-6 mt-10">
+                <div className="bg-red-50 border border-red-200 text-red-600 px-6 py-8 rounded-2xl text-center flex flex-col items-center justify-center gap-2">
+                    <FiAlertCircle size={32} />
+                    <h1 className="text-2xl font-bold">Product Not Found</h1>
+                    <p>{fetchError}</p>
+                </div>
+            </div>
+        );
+    }
+    
     return (
         <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
             <div className="mb-8 border-b border-gray-200 pb-6">
@@ -66,13 +60,6 @@ export default async function RequestedBookingsPage() {
                     Orders for products you sell. Approve them so a deliveryman can pick them up.
                 </p>
             </div>
-
-            {fetchError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2">
-                    <FiAlertCircle />
-                    <span>{fetchError}</span>
-                </div>
-            )}
 
             {orders.length === 0 ? (
                 <div className="bg-gray-50 border border-gray-200 rounded-xl p-12 text-center text-gray-500">
